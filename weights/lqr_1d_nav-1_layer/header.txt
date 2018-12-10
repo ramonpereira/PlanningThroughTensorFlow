@@ -1,0 +1,7 @@
+N00,action,u
+N01,states,t
+N02,states,v
+N03,states,x
+D20,regular,states, t
+D21,regular,states, v
+D22,regular,states, x

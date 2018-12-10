@@ -57,10 +57,6 @@ class TrainedCell(rnn_cell_impl.LayerRNNCell):
                 sess.run(assign_op)
 
     def call(self, inputs, state):
-        print(inputs.get_shape())
-        print(state.get_shape())
-
-
         with tf.variable_scope("Transition"):
             init = array_ops.concat([inputs, state], 1)
 
@@ -82,6 +78,8 @@ class TrainedCell(rnn_cell_impl.LayerRNNCell):
                                          self._weights[str(self._num_hidden_layers+1)]['bias'])
 
         with tf.variable_scope("Reward"):
+            print(state)
+            print(inputs)
             reward = self._domain.Reward(state, inputs)
 
         return tf.concat(axis=1, values=[reward, next_state]), next_state

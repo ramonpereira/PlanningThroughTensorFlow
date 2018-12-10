@@ -21,7 +21,6 @@ class ActionOptimizer(object):
                  learning_rate=0.005):
         self.action = tf.Variable(tf.truncated_normal(shape=[batch_size, num_step, num_act],
                                                       mean=action_mean, stddev=0.05), name="action")
-        print(self.action)
         self.batch_size = batch_size
         self.num_step = num_step
         self.learning_rate = learning_rate
@@ -102,12 +101,13 @@ class ActionOptimizer(object):
         print('MEAN: {0}, STD:{1}'.format(pred_mean, pred_std))
         print('The last state:{0}'.format(self.sess.run(self.last_state)[minimum_costs_id[0]]))
         print('Rewards each time step:{0}'.format(self.sess.run(self.outputs)[minimum_costs_id[0]]))
-        print('Intermediate states:{0}'.format(self.sess.run(self.intern_states)[minimum_costs_id[0]]))
+        intermediate_states = self.sess.run(self.intern_states)[minimum_costs_id[0]]
+        print('Intermediate states:{0}'.format(intermediate_states))
         if show_progress:
             progress = np.array(progress)[:, minimum_costs_id[0]]
             print('progress shape:{0}'.format(progress.shape))
             np.savetxt("progress.csv", progress.reshape((progress.shape[0], -1)), delimiter=",", fmt='%2.5f')
-        return best_action
+        return best_action, intermediate_states
 
     def set_initial_state(self, initial_state):
         assign_op = self.initial_state.assign(initial_state)

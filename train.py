@@ -3,16 +3,16 @@ import numpy as np
 from net.residual import DenselyConnectedNetwork
 from utils.argument import check_int_positive, check_float_positive
 from utils.io import read_data, dump_net_iohead, dump_norm_info, NetTopology, save_csv
-from viz.transition import nav_viz, res_viz, hvac_viz
+from viz.transition import nav_viz, res_viz, hvac_viz, lqr_1d_nav_viz, lqg_1d_nav_viz
 from viz.history import showhistory
-
 
 vizs = {
     "Navigation": nav_viz,
     "Reservoir": res_viz,
-    "HVAC": hvac_viz
+    "HVAC": hvac_viz,
+    "LQR_1D_NAV": lqr_1d_nav_viz,
+    "LQG_1D_NAV": lqg_1d_nav_viz
 }
-
 
 def main(args):
     pd_data = read_data(args.path+args.data)
@@ -36,7 +36,7 @@ def main(args):
 
     dnn = DenselyConnectedNetwork(n_data, args.neuron, n_label, args.layer, 0.1, mse_weights)
     mean_DNN, std_DNN = dnn.train(train_data, train_label, 100, True)
-    showhistory(dnn.history)
+    showhistory(dnn.history, args.domain, True)
 
     # # Dump the I/O info of the network
     # dump_net_iohead(pd_data, pd_label, n_data, n_label, args.head, args.layer+1, args.domain, args.type, args.path)
@@ -56,8 +56,8 @@ def main(args):
     print "Complete testing"
     feed_data = test_data[:, args.split:]
     act_tran = test_data[:, :args.split]
-    vizs[args.domain](feed_data, act_tran, test_label, pred_label, 100)
 
+    vizs[args.domain](feed_data, act_tran, test_label, pred_label, 100, True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Transform Learner")

@@ -7,7 +7,6 @@ def getscales(X,Y):
     scalefactionor = 2.0/(1.0+np.exp(-2*distances))-0.99
     return scalefactionor
 
-
 def nav_viz(data, action, label, pred, sample_size, save=False):
     sample_index = np.random.choice(len(data), sample_size)
     fig9 = plt.figure(figsize=(12, 9), dpi=100)
@@ -34,7 +33,7 @@ def nav_viz(data, action, label, pred, sample_size, save=False):
         plt.plot([data[i, 0], pred[i, 0]], [data[i, 1], pred[i, 1]], 'b-.', lw=1.5)
 
     if save:
-        plt.savefig('Comparison.png')
+        plt.savefig('nav-comparison.png')
     else:
         plt.show()
 
@@ -53,7 +52,7 @@ def res_viz(data, action, label, pred, sample_size, save=False):
         plt.ylabel('Water Level')
     fig.subplots_adjust(hspace=0.4)
     if save:
-        plt.savefig('Comparison.png')
+        plt.savefig('res-comparison.png')
     else:
         plt.show()
 
@@ -70,6 +69,36 @@ def hvac_viz(data, action, label, pred, sample_size, save=False):
             axes[i].locator_params(axis='y', nbins=5)
     fig.subplots_adjust(hspace=0.4)
     if save:
-        plt.savefig('Comparison.png')
+        plt.savefig('hvac-comparison.png')
     else:
         plt.show()
+
+def lqr_1d_nav_viz(data, action, label, pred, sample_size, save=False):
+    sample_index = np.random.choice(len(data), sample_size)
+
+    plt.plot(label, 'r-', lw=1.5, label="True Transition")
+    plt.plot(pred, 'b-.', lw=1.5, label="Network Estimated Transition")
+
+    # for i in sample_index:
+    #     plt.plot(label[i], 'r-', lw=1.5)
+    #     plt.plot(pred[i], 'b-.', lw=1.5)
+    
+    if save:
+        plt.savefig('lqr_1d_nav-comparison.png')
+    else:
+        plt.show()
+
+def lqg_1d_nav_viz(data, action, label, pred, sample_size, save=False):
+    sample_index = np.random.choice(len(data), sample_size)
+
+    plt.plot(label, 'r-', lw=1.5, label="True Transition")
+    plt.plot(pred, 'b-.', lw=1.5, label="Network Estimated Transition")
+
+    # for i in sample_index:
+    #     plt.plot(label[i], 'r-', lw=1.5)
+    #     plt.plot(pred[i], 'b-.', lw=1.5)
+    
+    if save:
+        plt.savefig('lqg_1d_nav-comparison.png')
+    else:
+        plt.show()        

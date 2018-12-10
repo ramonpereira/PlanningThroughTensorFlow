@@ -17,7 +17,10 @@ hvac_settings = {
     "air_max": tf.constant(10.0, dtype=tf.float32)
 }
 
-
 reservoir_settings = {}
 
 navi_settings = {}
+
+lqr_1d_nav_settings = {}
+
+lqg_1d_nav_settings = {}

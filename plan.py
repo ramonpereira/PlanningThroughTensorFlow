@@ -3,23 +3,27 @@ import numpy as np
 
 from net.cell import TrainedCell
 from net.optimization import ActionOptimizer
-from hard.domains import HVAC, NAVI, RESERVOIR
-from hard.specification import hvac_settings, reservoir_settings, navi_settings
+from hard.domains import HVAC, NAVI, RESERVOIR, LQR_1D_NAV, LQG_1D_NAV
+from hard.specification import hvac_settings, reservoir_settings, navi_settings, lqr_1d_nav_settings, lqg_1d_nav_settings
 from hard.instance import hvac3_instance, hvac6_instance, reservoir3_instance, \
-    reservoir4_instance, navi8_instance, navi10_instance
+    reservoir4_instance, navi8_instance, navi10_instance, lqr_instance0, lqg_instance0, lqg_instance1, lqg_instance2
 from utils.argument import check_int_positive, check_float_positive
 from utils.io import load_pickle, load_csv, save_csv
 
 domains = {
     "Navigation": NAVI,
     "Reservoir": RESERVOIR,
-    "HVAC": HVAC
+    "HVAC": HVAC,
+    "LQR_1D_Navigation": LQR_1D_NAV,
+    "LQG_1D_Navigation": LQG_1D_NAV
 }
 
 settings = {
     "Navigation": navi_settings,
     "Reservoir": reservoir_settings,
-    "HVAC": hvac_settings
+    "HVAC": hvac_settings,
+    "LQR_1D_Navigation": lqr_1d_nav_settings,
+    "LQG_1D_Navigation": lqg_1d_nav_settings
 }
 
 instances = {
@@ -29,6 +33,10 @@ instances = {
     "Reservoir4": reservoir4_instance,
     "Navigation10": navi10_instance,
     "Navigation8": navi8_instance,
+    "LQR0": lqr_instance0,
+    "LQG0": lqg_instance0,
+    "LQG1": lqg_instance1,
+    "LQG2": lqg_instance2
 }
 
 def constaint(s):
@@ -60,7 +68,7 @@ def main(args):
                                 dropout=0.1,
                                 pretrained=pretrained_weights,
                                 normalize=normalization,
-                                learning_rate=0.01,
+                                learning_rate=0.001,
                                 action_mean=5,
                                 )
 
@@ -82,9 +90,9 @@ def main(args):
     else:
         action_constraints = None
 
-    best_actions = optimizer.Optimize(action_constraints, epoch=args.epoch)
+    best_actions, intermediate_states = optimizer.Optimize(action_constraints, epoch=args.epoch)
     save_csv(best_actions, "", args.resp)
-
+    save_csv(intermediate_states, "", args.domain + "-" + args.instance + "-tfp-intermediate_states")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Tensorflow Planner")

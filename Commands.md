@@ -3,11 +3,40 @@ Commands
 The following commands are used in generating experiment results on our paper.
 
 ## Training
+
 We train 3 domains in the paper: Reservoir, HVAC, Navigation.
 
 Reservoir : 1 hidden layer, 32 neurons in layer, densely connected
 HVAC: 1 hidden layer, 32 neurons in layer, densely connected
 Navigation: 2 hidden layers, 32 neurons in each layer, densely connected
+
+### LQR 1D Navigation
+
+1-Layer:
+
+```bash
+python train.py -p data/LQR_1D_NAV/ -x lqr_nav_1d-data.txt -y lqr_nav_1d-label.txt -w weights/lqr_1d_nav-1_layer/ -s 4 -d LQG_1D_NAV -l 1
+```
+
+2-Layers:
+
+```bash
+python train.py -p data/LQR_1D_NAV/ -x lqr_nav_1d-data.txt -y lqr_nav_1d-label.txt -w weights/lqr_1d_nav-2_layers/ -s 4 -d LQG_1D_NAV -l 2
+```
+
+### LQG 1D Navigation
+
+1-Layer:
+
+```bash
+python train.py -p data/LQG_1D_NAV/ -x lqg_nav_1d-data.txt -y lqg_nav_1d-label.txt -w weights/lqg_1d_nav-1_layer/ -s 4 -d LQG_1D_NAV -l 1
+```
+
+2-Layers:
+
+```bash
+python train.py -p data/LQG_1D_NAV/ -x lqg_nav_1d-data.txt -y lqg_nav_1d-label.txt -w weights/lqg_1d_nav-2_layers/ -s 4 -d LQG_1D_NAV -l 2
+```
 
 ### Reservoir 3
 ```bash
@@ -41,7 +70,8 @@ python train.py -p data/Navigation/10x10/ -x Navigation_Data.txt -y Navigation_L
 ```
 
 ## Tensorflow Planning
-Planning on trained domain should connected to the real domain similator for evaluation purpose,
+
+Planning on trained domain should connected to the real domain simulator for evaluation purpose,
 Since the learned transition function is not the one in real world. Directly using this planner 
 could end up meeting different state in the real world.
 
@@ -50,11 +80,30 @@ Note:
 2. The last action given by this planner is not counted in reward, so may be arbitrary. 
 3. Change code for the action constraints, not given as parameters currently.
 
-If you only want to check if the planner works in general. Please run following commands with psudo initial state.
+If you only want to check if the planner works in general. Please run following commands with pseudo initial state.
 
+### LQR 1D Navigation
 
+```bash
+python plan.py -w weights/lqr_1d_nav-1_layer/ -d LQR_1D_Navigation -i LQR0 -s 3 -a 1 --get_state temp/test/lqr_1d_nav/state --constraint -1 1 -hz 100 -l 1
+```
+
+```bash
+python plan.py -w weights/lqr_1d_nav-2_layers/ -d LQR_1D_Navigation -i LQR0 -s 3 -a 1 --get_state temp/test/lqr_1d_nav/state --constraint -1 1 -hz 100 -l 2
+```
+
+### LQG 1D Navigation
+
+```bash
+python plan.py -w weights/lqg_1d_nav-1_layer/ -d LQG_1D_Navigation -i LQG0 -s 3 -a 1 --get_state temp/test/lqg_1d_nav/init_problem_instance_0 --constraint -1 1 -hz 100 -l 1
+```
+
+```bash
+python plan.py -w weights/lqg_1d_nav-2_layers/ -d LQG_1D_Navigation -i LQG2 -s 3 -a 1 --get_state temp/test/lqg_1d_nav/init_problem_instance_2 --constraint -1 1 -hz 100 -l 2
+```
 
 ### Navigation 8x8
+
 ```bash
 python plan.py -w weights/nav/8x8 -d Navigation -i Navigation8 -s 2 -a 2 --get_state temp/test/nav/8x8/state --constraint -1 1
 ```
@@ -85,7 +134,8 @@ python plan.py -w weights/reservoir/reservoir3 -d Reservoir -i Reservoir3 -s 3 -
 python plan.py -w weights/reservoir/reservoir4 -d Reservoir -i Reservoir4 -s 4 -a 4 --get_state temp/test/reservoir/reservoir4/state -l 1
 ```
 
-## RDDL Simulater Planning
+## RDDL Simulator Planning
+
 The following commands are used in RDDL simulator we provided [here](https://github.com/wuga214/PULLREQUEST_rddlsim)
 The RDDL simulator would call python code in this repository. Please note the TensorflowPolicy needs the python code address in your computer.
 Modify `Python_Repo` in the TensorflowPolicy.java before running.

@@ -56,3 +56,27 @@ navi8_instance = {
     "goal": 3.0,
     "centre": 0
 }
+
+lqr_instance0 = {
+    "dt": 0.5,
+    "gx": 10,
+    "H": 100
+}
+
+lqg_instance0 = {
+    "dt": 0.5,
+    "gx": -69.1,
+    "H": 100
+}
+
+lqg_instance1 = {
+    "dt": 0.5,
+    "gx": 2.44,
+    "H": 100
+}
+
+lqg_instance2 = {
+    "dt": 0.5,
+    "gx": 14.77,
+    "H": 100
+}

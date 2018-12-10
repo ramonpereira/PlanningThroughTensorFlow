@@ -109,6 +109,83 @@ class NAVI(object):
         new_reward = -tf.reduce_sum(tf.abs(states - self.GOAL()), 1, keepdims=True)
         return new_reward
 
+class LQR_1D_NAV(object):
+    def __init__(self,
+                 batch_size,
+                 instance_settings,
+                 **unused):
+        self.__dict__.update(instance_settings)
+        self.batch_size = batch_size
+
+        self._dt(instance_settings["dt"])
+        self._gx(instance_settings["gx"])
+        self._h(instance_settings["H"])
+
+    def _dt(self, dt):
+        self.dt = tf.constant(dt, dtype=tf.float32)
+
+    def _gx(self, gx):
+        self.gx = tf.constant(gx, dtype=tf.float32)
+
+    def _h(self, h):
+        self.h = tf.constant(h, dtype=tf.float32)
+
+    def DT(self):
+        return self.dt
+
+    def GX(self):
+        return self.gx
+
+    def H(self):
+        return self.h
+
+    def Reward(self, states, actions):
+        value_horizon_achieved = 0
+        if tf.less(states, self.h) is not None:
+            value_horizon_achieved = ((actions * actions) * 0.01)
+
+        value_x_gx = ((states - self.GX()) * (states - self.GX()))
+        reward = -tf.reduce_sum(value_x_gx + value_horizon_achieved, 1, keepdims=True)
+        return reward
+
+class LQG_1D_NAV(object):
+    def __init__(self,
+                 batch_size,
+                 instance_settings,
+                 **unused):
+        self.__dict__.update(instance_settings)
+        self.batch_size = batch_size
+
+        self._dt(instance_settings["dt"])
+        self._gx(instance_settings["gx"])
+        self._h(instance_settings["H"])
+
+    def _dt(self, dt):
+        self.dt = tf.constant(dt, dtype=tf.float32)
+
+    def _gx(self, gx):
+        self.gx = tf.constant(gx, dtype=tf.float32)
+
+    def _h(self, h):
+        self.h = tf.constant(h, dtype=tf.float32)
+
+    def DT(self):
+        return self.dt
+
+    def GX(self):
+        return self.gx
+
+    def H(self):
+        return self.h
+
+    def Reward(self, states, actions):
+        value_horizon_achieved = 0
+        if tf.less(states, self.h) is not None:
+            value_horizon_achieved = ((actions * actions) * 0.01)
+
+        value_x_gx = ((states - self.GX()) * (states - self.GX()))
+        reward = -tf.reduce_sum(value_x_gx + value_horizon_achieved, 1, keepdims=True)
+        return reward        
 
 # Matrix computation version update
 class HVAC(object):
@@ -206,7 +283,7 @@ class HVAC(object):
     def Reward(self, states, actions):
         break_penalty = tf.where(tf.logical_or(tf.less(states, self.TEMP_LOW()),
                                                tf.greater(states, self.TEMP_UP())),
-                                 self.PENALTY()+self.ZERO(), self.ZERO())
+                                                self.PENALTY()+self.ZERO(), self.ZERO())
         dist_penalty = tf.abs(((self.TEMP_UP() + self.TEMP_LOW()) / tf.constant(2.0, dtype=tf.float32)) - states)
         ener_penalty = actions * self.COST_AIR()
         new_rewards = tf.reduce_sum(tf.constant(10.0, tf.float32) * dist_penalty + ener_penalty + break_penalty,
