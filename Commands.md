@@ -29,13 +29,13 @@ python train.py -p data/LQR_1D_NAV/ -x lqr_nav_1d-data.txt -y lqr_nav_1d-label.t
 1-Layer:
 
 ```bash
-python train.py -p data/LQG_1D_NAV/ -x lqg_nav_1d-data.txt -y lqg_nav_1d-label.txt -w weights/lqg_1d_nav-1_layer/ -s 4 -d LQG_1D_NAV -l 1
+python train.py -p data/LQG_1D_NAV/ -x lqg_1d_nav-data.txt -y lqg_1d_nav-label.txt -w weights/lqg_1d_nav-1_layer/ -s 4 -d LQG_1D_NAV -l 1
 ```
 
 2-Layers:
 
 ```bash
-python train.py -p data/LQG_1D_NAV/ -x lqg_nav_1d-data.txt -y lqg_nav_1d-label.txt -w weights/lqg_1d_nav-2_layers/ -s 4 -d LQG_1D_NAV -l 2
+python train.py -p data/LQG_1D_NAV/ -x lqg_1d_nav-data.txt -y lqg_1d_nav-label.txt -w weights/lqg_1d_nav-2_layers/ -s 4 -d LQG_1D_NAV -l 2
 ```
 
 ### Reservoir 3
@@ -85,11 +85,11 @@ If you only want to check if the planner works in general. Please run following 
 ### LQR 1D Navigation
 
 ```bash
-python plan.py -w weights/lqr_1d_nav-1_layer/ -d LQR_1D_Navigation -i LQR0 -s 3 -a 1 --get_state temp/test/lqr_1d_nav/state --constraint -1 1 -hz 100 -l 1
+python plan.py -w weights/lqr_1d_nav-1_layer/ -d LQR_1D_Navigation -i LQR0 -s 3 -a 1 --get_state temp/test/lqr_1d_nav/init_problem_instance_0 --constraint -1 1 -hz 100 -l 1
 ```
 
 ```bash
-python plan.py -w weights/lqr_1d_nav-2_layers/ -d LQR_1D_Navigation -i LQR0 -s 3 -a 1 --get_state temp/test/lqr_1d_nav/state --constraint -1 1 -hz 100 -l 2
+python plan.py -w weights/lqr_1d_nav-2_layers/ -d LQR_1D_Navigation -i LQR0 -s 3 -a 1 --get_state temp/test/lqr_1d_nav/init_problem_instance_0 --constraint -1 1 -hz 100 -l 2
 ```
 
 ### LQG 1D Navigation
@@ -154,6 +154,47 @@ Modify `Python_Repo` in the TensorflowPolicy.java before running.
 ```bash
 ./run rddl.sim.Simulator -R /media/wuga/Storage/JAIR-18/rddls/HVAC/ROOM_3/HVAC_VAV.rddl2 -P rddl.policy.domain.HVAC.TensorflowPolicy -I inst_hvac_vav_fix -V rddl.viz.GenericScreenDisplay
 ```
+Planning through Backpropagation
+===
+
+This is a refined version of Tensorflow planner on planning problem. 
+
+In the training stage, we train the transition functions through the previous observations.
+In another words, we assume the trainsition function is unknown while the reward function is given.
+
+The code is able to connect to the RDDL simulator by calling python through commandline tools.
+
+
+# Example
+Train
+```bash
+python train.py \
+-p data/res/reservoir4/ \
+-x Reservoir_Data.txt \
+-y Reservoir_Label.txt \
+-w weights/reservoir/reservoir4 \
+-s 4 \
+-d Reservoir
+```
+
+Plan
+```bash
+python plan.py \
+-w weights/reservoir/reservoir3 \
+-d Reservoir \
+-i Reservoir3 \
+-s 3 \
+-a 3 \
+--initial temp/state
+```
+
+More concrete examples could be found in `Commands.md` file.
+
+Note: 
+1. the initial state is optional, and the default is zero state.
+2. Action constrain need to manually set before running planner.
+
+
 
 ### HVAC 6
 ```bash

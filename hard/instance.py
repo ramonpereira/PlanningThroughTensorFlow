@@ -59,13 +59,13 @@ navi8_instance = {
 
 lqr_instance0 = {
     "dt": 0.5,
-    "gx": 10,
+    "gx": -50.3,
     "H": 100
 }
 
 lqg_instance0 = {
     "dt": 0.5,
-    "gx": -69.1,
+    "gx": 98.89213,
     "H": 100
 }
 

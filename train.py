@@ -35,7 +35,7 @@ def main(args):
     mse_weights = (1.0 / np.square(np.max(train_label, axis=0) + 1)) * 10
 
     dnn = DenselyConnectedNetwork(n_data, args.neuron, n_label, args.layer, 0.1, mse_weights)
-    mean_DNN, std_DNN = dnn.train(train_data, train_label, 100, True)
+    mean_DNN, std_DNN = dnn.train(train_data, train_label, 200, True)
     showhistory(dnn.history, args.domain, True)
 
     # # Dump the I/O info of the network

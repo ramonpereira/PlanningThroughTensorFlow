@@ -68,7 +68,7 @@ def main(args):
                                 dropout=0.1,
                                 pretrained=pretrained_weights,
                                 normalize=normalization,
-                                learning_rate=0.001,
+                                learning_rate=0.01,
                                 action_mean=5,
                                 )
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     parser.add_argument('-hz', dest='horizon', type=check_int_positive,  default=20)
     parser.add_argument('-a', dest='action', type=check_int_positive,  default=6)
     parser.add_argument('-s', dest='state', type=check_int_positive, default=6)
-    parser.add_argument('-e', dest='epoch', type=check_int_positive, default=300)
+    parser.add_argument('-e', dest='epoch', type=check_int_positive, default=250)
     parser.add_argument('--get_state', dest='init', default='temp/state')
     parser.add_argument('--send_action', dest='resp', default='temp/action')
     parser.add_argument('--prefix', dest='head', default='D')
